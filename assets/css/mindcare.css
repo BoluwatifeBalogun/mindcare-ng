@@ -1,0 +1,49 @@
+/* MindCare NG design system — lavender + wellness green, Lora/Raleway, glassmorphism */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700;800&display=swap');
+:root{ --violet:#7C5CE0; --violet-deep:#41297F; --violet-soft:#C4B5FD; --green:#0B8A5F; --bg:#FAF7FF; --ink:#33235E; }
+body{ font-family:'Raleway',system-ui,sans-serif; color:var(--ink); background:var(--bg); min-height:100vh; }
+.mc-serif{ font-family:'Lora',Georgia,serif; }
+.glass{ background:rgba(255,255,255,.62); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.75); box-shadow:0 8px 32px rgba(76,29,149,.08); border-radius:24px; }
+.glass-deep{ background:rgba(255,255,255,.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.9); box-shadow:0 12px 40px rgba(76,29,149,.10); border-radius:24px; }
+.aurora{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+.aurora span{ position:absolute; border-radius:9999px; filter:blur(70px); opacity:.5; }
+.aurora .a1{ width:44rem;height:44rem; background:radial-gradient(circle,#C4B5FD,transparent 65%); top:-14rem;left:-10rem; animation:drift1 26s ease-in-out infinite alternate; }
+.aurora .a2{ width:36rem;height:36rem; background:radial-gradient(circle,#99F0CE,transparent 65%); bottom:-12rem;right:-8rem; animation:drift2 30s ease-in-out infinite alternate; }
+.aurora .a3{ width:26rem;height:26rem; background:radial-gradient(circle,#FBD1E8,transparent 65%); top:38%;left:52%; animation:drift1 34s ease-in-out infinite alternate-reverse; }
+@keyframes drift1{ from{transform:translate(0,0) scale(1)} to{transform:translate(4rem,3rem) scale(1.12)} }
+@keyframes drift2{ from{transform:translate(0,0) scale(1.05)} to{transform:translate(-3.5rem,-2.5rem) scale(.95)} }
+.mc-content{ position:relative; z-index:1; }
+.orb{ position:relative; border-radius:9999px; display:inline-block;
+  background:radial-gradient(circle at 32% 30%, #EDE6FF 0%, #A78BFA 42%, #6D4FD0 78%, #41297F 100%);
+  box-shadow:0 0 40px rgba(139,92,246,.45), inset 0 0 30px rgba(255,255,255,.35); }
+.orb.breathe{ animation:breathe 4.6s ease-in-out infinite; } .orb.think{ animation:breathe 1.5s ease-in-out infinite; }
+@keyframes breathe{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+.shimmer{ background:linear-gradient(110deg,var(--violet-deep) 35%, #A78BFA 50%, var(--violet-deep) 65%);
+  background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 5s linear infinite; }
+@keyframes shimmer{ to{ background-position:-220% 0 } }
+.glow-btn{ background:linear-gradient(135deg,#7C5CE0,#5B3BC4)!important; color:#fff!important; border:0!important;
+  border-radius:16px!important; box-shadow:0 4px 20px rgba(124,92,224,.45); transition:transform .18s ease, box-shadow .25s ease; font-weight:600; }
+.glow-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,92,224,.6); }
+.msg-in{ animation:msgIn .38s cubic-bezier(.21,1.02,.73,1) both; }
+@keyframes msgIn{ from{opacity:0; transform:translateY(14px) scale(.97)} to{opacity:1; transform:none} }
+.risk-ring{ box-shadow:0 0 0 1px rgba(220,38,38,.35), 0 0 24px rgba(220,38,38,.22); animation:riskPulse 2.4s ease-in-out infinite; }
+@keyframes riskPulse{ 0%,100%{box-shadow:0 0 0 1px rgba(220,38,38,.35),0 0 18px rgba(220,38,38,.18)} 50%{box-shadow:0 0 0 1px rgba(220,38,38,.5),0 0 34px rgba(220,38,38,.32)} }
+.bubble-user{ background:linear-gradient(135deg,#7C5CE0,#5B3BC4); color:#fff; border-radius:24px 24px 8px 24px; }
+.bubble-ai{ border-radius:24px 24px 24px 8px; }
+.bubble-couns{ background:#ECFDF5; border:1px solid #A7F3D0; border-radius:24px 24px 24px 8px; }
+.dot-typing span{ display:inline-block; width:7px;height:7px; margin:0 2px; border-radius:9999px; background:#A78BFA; animation:bounceDot 1.2s infinite; }
+.dot-typing span:nth-child(2){ animation-delay:.15s } .dot-typing span:nth-child(3){ animation-delay:.3s }
+@keyframes bounceDot{ 0%,60%,100%{transform:translateY(0); opacity:.5} 30%{transform:translateY(-6px); opacity:1} }
+.pill{ padding:.25rem .65rem; border-radius:9999px; font-size:.72rem; font-weight:700; }
+.pill-violet{ background:#EDE9FE; color:#5B21B6 } .pill-green{ background:#D1FAE5; color:#065F46 }
+.pill-amber{ background:#FEF3C7; color:#92400E } .pill-red{ background:#FEE2E2; color:#B91C1C }
+.mood-btn{ border:0; background:transparent; border-radius:16px; padding:.6rem; min-width:54px; cursor:pointer; }
+.mood-btn.active{ background:#EDE9FE; outline:2px solid #A78BFA; }
+.tabbtn{ border:0; border-radius:16px; font-weight:700; font-size:.85rem; padding:.6rem 1rem; background:transparent; color:#6D28D9; cursor:pointer; }
+.tabbtn.active{ background:#7C5CE0; color:#fff; }
+input.form-control, select.form-select, textarea.form-control{ border-radius:16px!important; border-color:#EDE9FE!important; background:rgba(255,255,255,.7)!important; }
+input.form-control:focus, textarea.form-control:focus{ box-shadow:0 0 0 3px rgba(167,139,250,.35)!important; }
+a{ color:#6D28D9 }
+@media (prefers-reduced-motion: reduce){ .aurora span,.orb,.shimmer,.msg-in,.risk-ring,.dot-typing span{ animation:none!important } .glow-btn:hover{ transform:none } }

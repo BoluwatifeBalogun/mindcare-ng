@@ -1,0 +1,23 @@
+<?php
+require_once __DIR__ . '/../includes/auth.php';
+require_role('admin');
+header('Content-Type: text/csv; charset=utf-8');
+header('Content-Disposition: attachment; filename="mindcare-report.csv"');
+$out = fopen('php://output', 'w');
+fputcsv($out, ['MindCare NG — System Report', date('j M Y, H:i')]);
+fputcsv($out, []);
+fputcsv($out, ['Referrals']);
+fputcsv($out, ['Student', 'Risk', 'Source', 'Status', 'Time']);
+$q = db()->query('SELECT s.name, r.risk, r.source, r.status, r.created_at FROM referrals r JOIN users s ON s.id = r.student_id ORDER BY r.id DESC');
+foreach ($q as $r) fputcsv($out, array_values($r));
+fputcsv($out, []);
+fputcsv($out, ['Appointments']);
+fputcsv($out, ['Student', 'Counsellor', 'When', 'Status', 'Reason']);
+$q = db()->query('SELECT s.name, COALESCE(c.name, "—"), a.when_text, a.status, a.reason FROM appointments a JOIN users s ON s.id = a.student_id LEFT JOIN users c ON c.id = a.counsellor_id ORDER BY a.id DESC');
+foreach ($q as $r) fputcsv($out, array_values($r));
+fputcsv($out, []);
+fputcsv($out, ['Usage']);
+fputcsv($out, ['Month', 'AI messages']);
+$q = db()->query('SELECT DATE_FORMAT(created_at, "%b %Y") AS m, COUNT(*) FROM chat_messages WHERE role = "user" GROUP BY m ORDER BY MIN(created_at)');
+foreach ($q as $r) fputcsv($out, array_values($r));
+fclose($out);

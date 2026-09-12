@@ -1,0 +1,9 @@
+# Local configuration — holds the Anthropic API key and DB credentials. Never commit.
+config.php
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

@@ -1,0 +1,18 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: Provide config for lint
+        run: cp config.sample.php config.php
+      - name: Lint all PHP files
+        run: |
+          set -e
+          find . -name '*.php' -not -path './demo/*' -print0 | xargs -0 -n1 php -l
+      - name: Risk engine & scoring tests
+        run: php tests/run_tests.php
