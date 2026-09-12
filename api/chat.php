@@ -3,6 +3,7 @@
    Intake -> pre-scan -> context -> inference -> item-8 resolve -> route -> persist. */
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/risk.php';
+require_once __DIR__ . '/../includes/ml_classifier.php';
 require_once __DIR__ . '/../includes/ai.php';
 
 $u = require_role('student');
@@ -18,7 +19,11 @@ $text = trim($b['message'] ?? '');
 if ($text === '') json_out(['error' => 'Empty message'], 422);
 if (mb_strlen($text) > 4000) json_out(['error' => 'Message too long'], 422);
 
-$pre = pre_scan($text);
+/* Local risk screen: keyword rules + the trained classifier (risk_model.json)
+   vote; worst verdict wins. Runs before and independently of the LLM call,
+   so escalation still works when the API is down. */
+$screen = local_scan($text);
+$pre = $screen['risk'];
 
 // Build model context: prior turns (counsellor notes excluded from model input)
 $st = db()->prepare("SELECT role, text FROM chat_messages WHERE student_id = ? AND role IN ('user','assistant') ORDER BY id DESC LIMIT 20");
@@ -52,10 +57,11 @@ $pdo->prepare('INSERT INTO chat_messages (student_id, role, text, risk) VALUES (
 
 if ($action !== 'none') {
     $context = array_slice(array_merge($messages, [['role' => 'assistant', 'content' => $reply]]), -4);
+    $flags = 'screens: keywords=' . $screen['kw'] . ', classifier=' . ($screen['ml'] ?? 'n/a') . ', model=' . ($model_risk ?? 'unreachable');
     $summaries = [
-        'crisis' => 'Crisis-level risk confirmed in a live session. Immediate human follow-up recommended.',
-        'review' => 'Keyword scanner flagged possible crisis language; Amara read it as non-crisis in context. Queued for human review.',
-        'soft'   => 'Persistent distress signals detected in conversation. Suggested follow-up within ' . get_setting('follow_up_hours', '48') . ' hours.',
+        'crisis' => 'Crisis-level risk confirmed in a live session. Immediate human follow-up recommended. (' . $flags . ')',
+        'review' => 'Local risk screen flagged possible crisis language; Amara read it as non-crisis in context. Queued for human review. (' . $flags . ')',
+        'soft'   => 'Persistent distress signals detected in conversation. Suggested follow-up within ' . get_setting('follow_up_hours', '48') . ' hours. (' . $flags . ')',
     ];
     $pdo->prepare('INSERT INTO referrals (student_id, source, risk, summary, context_json) VALUES (?, "AI chat session", ?, ?, ?)')
         ->execute([$u['id'], $action === 'crisis' ? 'high' : 'moderate', $summaries[$action], json_encode($context)]);

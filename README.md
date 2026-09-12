@@ -32,8 +32,12 @@ Seeded staff accounts (change passwords after first login): `admin`,
 
 Every student message runs server-side through `api/chat.php`:
 
-1. **Pre-scan** — tiered keyword risk scanner (`includes/risk.php`), so crisis
-   language is caught even if the AI API is down
+1. **Local risk screen** — two independent voters, worst verdict wins:
+   tiered keyword rules (`includes/risk.php`) and a **trained TF-IDF +
+   logistic-regression classifier** (`includes/ml_classifier.php`, trained on
+   the CounselChat corpus by `ml/train_classifier.py` — see `ml/README.md`).
+   Both run server-side with no network, so crisis language is caught even if
+   the AI API is down
 2. **Inference** — Claude with a CBT-informed system prompt plus few-shot
    exemplars in the format of the *NLP Mental Health Conversations* corpus
    (Chapter 3.3); the model appends a hidden machine-read `<risk>` tag
@@ -53,7 +57,8 @@ published Kroenke/Spitzer cutoffs and runs server-side.
 php tests/run_tests.php
 ```
 
-24 assertions over the risk engine, item-8 resolver, scoring bands, and risk-tag
+32 assertions over the risk engine, trained classifier, item-8 resolver, scoring
+bands, and risk-tag
 parsing. CI (`.github/workflows/ci.yml`) lints every PHP file and runs the suite
 on each push.
 

@@ -2,6 +2,7 @@
 /* Pure-function test suite — mirrors the validated JS suites.
    Run: php tests/run_tests.php  (no DB or network needed) */
 require_once __DIR__ . '/../includes/risk.php';
+require_once __DIR__ . '/../includes/ml_classifier.php';
 $pass = 0; $fail = 0;
 function t(string $n, $got, $want): void {
     global $pass, $fail;
@@ -28,6 +29,16 @@ echo "--- scoring bands ---\n";
 t('PHQ 4', phq_band(4), 'Minimal');  t('PHQ 5', phq_band(5), 'Mild');
 t('PHQ 10', phq_band(10), 'Moderate'); t('PHQ 15', phq_band(15), 'Moderately severe'); t('PHQ 20', phq_band(20), 'Severe');
 t('GAD 4', gad_band(4), 'Minimal'); t('GAD 5', gad_band(5), 'Mild'); t('GAD 10', gad_band(10), 'Moderate'); t('GAD 15', gad_band(15), 'Severe');
+echo "--- trained classifier (risk_model.json) ---\n";
+t('model file loads', ml_model() !== null, true);
+t('explicit crisis -> high', ml_scan('I have been thinking about suicide and self-harm every day'), 'high');
+t('benign -> low', ml_scan('my roommate keeps eating my food and it is annoying'), 'low');
+t('empty/unknown words -> low', ml_scan('zzzz qqqq'), 'low');
+echo "--- combined local screen (keywords + classifier) ---\n";
+t('kw miss, ml catch: overdose', local_scan('I took a lot of pills last month and I am scared I will do it again')['risk'], 'moderate');
+t('kw miss, ml catch: goodbye letters', local_scan('I have been giving my things away and writing letters to say goodbye to people')['risk'], 'moderate');
+t('kw high always wins', local_scan('I want to end my life')['risk'], 'high');
+t('screen exposes both votes', array_keys(local_scan('hello')), ['risk', 'kw', 'ml']);
 echo "--- risk tag parsing (as in ai.php) ---\n";
 $raw = "I'm here with you.\n<risk>moderate</risk>";
 preg_match('/<risk>(low|moderate|high)<\/risk>/i', $raw, $m);

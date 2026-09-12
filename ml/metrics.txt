@@ -1,0 +1,13 @@
+accuracy 0.706
+macro-F1 0.645
+5-fold macro-F1 0.544 +/- 0.033
+
+              precision    recall  f1-score   support
+
+         low      0.806     0.752     0.778       105
+    moderate      0.540     0.642     0.586        53
+        high      1.000     0.400     0.571         5
+
+    accuracy                          0.706       163
+   macro avg      0.782     0.598     0.645       163
+weighted avg      0.725     0.706     0.710       163
