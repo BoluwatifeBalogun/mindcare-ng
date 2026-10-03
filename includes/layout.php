@@ -7,7 +7,7 @@ function page_head(string $title): void { ?>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= htmlspecialchars($title) ?> · MindCare NG</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="assets/css/mindcare.css" rel="stylesheet">
+<link href="assets/css/mindcare.css?v=2" rel="stylesheet">
 </head>
 <body>
 <div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
