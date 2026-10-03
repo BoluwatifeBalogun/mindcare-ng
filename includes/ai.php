@@ -64,24 +64,32 @@ function ask_amara(array $messages, ?string $context_note = null): array {
     return ['text' => $text, 'risk' => $risk];
 }
 
-/** POST JSON, return decoded body; throws on transport/API failure. */
+/** POST JSON, return decoded body; throws on transport/API failure.
+    Transient overload (HTTP 429/503) is retried up to 3 attempts with backoff,
+    so free-tier demand spikes don't surface to the student. */
 function ai_http(string $url, array $headers, array $payload): array {
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 60,
-        CURLOPT_HTTPHEADER => array_merge(['Content-Type: application/json'], $headers),
-    ]);
-    $res = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ($res === false || $code >= 400) {
-        error_log('AI call failed [' . (defined('AI_PROVIDER') ? AI_PROVIDER : '?') . '] HTTP ' . $code . ': ' . substr((string)$res, 0, 300));
-        throw new RuntimeException('AI API unavailable (HTTP ' . $code . ')');
+    $body = json_encode($payload);
+    $attempts = 3;
+    for ($i = 1; $i <= $attempts; $i++) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $body,
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => array_merge(['Content-Type: application/json'], $headers),
+        ]);
+        $res = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($res !== false && $code < 400) return json_decode($res, true) ?: [];
+        $transient = in_array($code, [429, 503], true) || $res === false;
+        error_log('AI call failed [' . (defined('AI_PROVIDER') ? AI_PROVIDER : '?') . '] HTTP ' . $code
+            . ' (attempt ' . $i . '/' . $attempts . '): ' . substr((string)$res, 0, 300));
+        if (!$transient || $i === $attempts) throw new RuntimeException('AI API unavailable (HTTP ' . $code . ')');
+        usleep(1200000 * $i);   // 1.2s, then 2.4s
     }
-    return json_decode($res, true) ?: [];
+    throw new RuntimeException('AI API unavailable');
 }
 
 /** Claude: system prompt as 'system', roles user/assistant. Returns raw reply text. */
