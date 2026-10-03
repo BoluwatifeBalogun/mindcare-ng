@@ -86,7 +86,7 @@ function ai_http(string $url, array $headers, array $payload): array {
         $transient = in_array($code, [429, 503], true) || $res === false;
         error_log('AI call failed [' . (defined('AI_PROVIDER') ? AI_PROVIDER : '?') . '] HTTP ' . $code
             . ' (attempt ' . $i . '/' . $attempts . '): ' . substr((string)$res, 0, 300));
-        if (!$transient || $i === $attempts) throw new RuntimeException('AI API unavailable (HTTP ' . $code . ')');
+        if (!$transient || $i === $attempts) throw new RuntimeException('AI API unavailable (HTTP ' . $code . '): ' . substr((string)$res, 0, 200));
         usleep(1200000 * $i);   // 1.2s, then 2.4s
     }
     throw new RuntimeException('AI API unavailable');
@@ -113,6 +113,22 @@ function call_gemini(array $messages): string {
             'parts' => [['text' => $m['content']]],
         ];
     }
+    try {
+        return gemini_generate($contents);
+    } catch (RuntimeException $e) {
+        /* Some lightweight models are single-turn only. Flatten the history
+           into one transcript message and retry once; behaviour is otherwise
+           identical (same system prompt, same hidden <risk> tag). */
+        if (stripos($e->getMessage(), 'multiturn') === false) throw $e;
+        $t = '';
+        foreach ($messages as $m)
+            $t .= ($m['role'] === 'assistant' ? 'Amara' : 'Student') . ': ' . $m['content'] . "\n\n";
+        $t .= 'Reply to the student\'s last message as Amara.';
+        return gemini_generate([['role' => 'user', 'parts' => [['text' => $t]]]]);
+    }
+}
+
+function gemini_generate(array $contents): string {
     $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent';
     $data = ai_http($url, ['x-goog-api-key: ' . GEMINI_API_KEY], [
         'system_instruction' => ['parts' => [['text' => SYSTEM_PROMPT . EXEMPLARS]]],
