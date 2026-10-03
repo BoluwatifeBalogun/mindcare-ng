@@ -56,34 +56,59 @@ function ask_amara(array $messages, ?string $context_note = null): array {
         $last = count($messages) - 1;
         $messages[$last]['content'] .= "\n\n[Context from the app, not from the student: {$context_note}]";
     }
-    $payload = json_encode([
-        'model' => ANTHROPIC_MODEL,
-        'max_tokens' => 1000,
-        'system' => SYSTEM_PROMPT . EXEMPLARS,
-        'messages' => $messages,
-    ]);
-    $ch = curl_init('https://api.anthropic.com/v1/messages');
+    $provider = defined('AI_PROVIDER') ? AI_PROVIDER : 'anthropic';
+    $raw = $provider === 'gemini' ? call_gemini($messages) : call_anthropic($messages);
+    $risk = 'low';
+    if (preg_match('/<risk>(low|moderate|high)<\/risk>/i', $raw, $m)) $risk = strtolower($m[1]);
+    $text = trim(preg_replace('/<risk>(low|moderate|high)<\/risk>/i', '', $raw));
+    return ['text' => $text, 'risk' => $risk];
+}
+
+/** POST JSON, return decoded body; throws on transport/API failure. */
+function ai_http(string $url, array $headers, array $payload): array {
+    $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_POSTFIELDS => json_encode($payload),
         CURLOPT_TIMEOUT => 60,
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'x-api-key: ' . ANTHROPIC_API_KEY,
-            'anthropic-version: 2023-06-01',
-        ],
+        CURLOPT_HTTPHEADER => array_merge(['Content-Type: application/json'], $headers),
     ]);
     $res = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     if ($res === false || $code >= 400) throw new RuntimeException('AI API unavailable (HTTP ' . $code . ')');
-    $data = json_decode($res, true);
+    return json_decode($res, true) ?: [];
+}
+
+/** Claude: system prompt as 'system', roles user/assistant. Returns raw reply text. */
+function call_anthropic(array $messages): string {
+    $data = ai_http('https://api.anthropic.com/v1/messages',
+        ['x-api-key: ' . ANTHROPIC_API_KEY, 'anthropic-version: 2023-06-01'],
+        ['model' => ANTHROPIC_MODEL, 'max_tokens' => 1000,
+         'system' => SYSTEM_PROMPT . EXEMPLARS, 'messages' => $messages]);
     $raw = '';
     foreach (($data['content'] ?? []) as $b) if (($b['type'] ?? '') === 'text') $raw .= $b['text'];
-    $raw = trim($raw);
-    $risk = 'low';
-    if (preg_match('/<risk>(low|moderate|high)<\/risk>/i', $raw, $m)) $risk = strtolower($m[1]);
-    $text = trim(preg_replace('/<risk>(low|moderate|high)<\/risk>/i', '', $raw));
-    return ['text' => $text, 'risk' => $risk];
+    return trim($raw);
+}
+
+/** Gemini: system prompt as system_instruction, role 'assistant' becomes 'model'.
+    Same <risk> tag convention; the prompt instructs it identically. */
+function call_gemini(array $messages): string {
+    $contents = [];
+    foreach ($messages as $m) {
+        $contents[] = [
+            'role' => $m['role'] === 'assistant' ? 'model' : 'user',
+            'parts' => [['text' => $m['content']]],
+        ];
+    }
+    $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent';
+    $data = ai_http($url, ['x-goog-api-key: ' . GEMINI_API_KEY], [
+        'system_instruction' => ['parts' => [['text' => SYSTEM_PROMPT . EXEMPLARS]]],
+        'contents' => $contents,
+        'generationConfig' => ['maxOutputTokens' => 1000],
+    ]);
+    $raw = '';
+    foreach (($data['candidates'][0]['content']['parts'] ?? []) as $p) $raw .= $p['text'] ?? '';
+    return trim($raw);
 }
