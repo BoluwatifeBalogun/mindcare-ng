@@ -114,27 +114,27 @@ function call_gemini(array $messages): string {
         ];
     }
     try {
-        return gemini_generate($contents);
+        return gemini_generate($contents, true);
     } catch (RuntimeException $e) {
-        /* Some lightweight models are single-turn only. Flatten the history
-           into one transcript message and retry once; behaviour is otherwise
-           identical (same system prompt, same hidden <risk> tag). */
-        if (stripos($e->getMessage(), 'multiturn') === false) throw $e;
-        $t = '';
+        /* Some lightweight models reject multi-turn history or the separate
+           system_instruction field. On any 400, retry once with the barest
+           request a text model accepts: ONE user message containing the
+           persona, the exemplars and the conversation transcript inline.
+           The hidden <risk> tag convention is unchanged. */
+        if (strpos($e->getMessage(), 'HTTP 400') === false) throw $e;
+        $t = SYSTEM_PROMPT . EXEMPLARS . "\n\n--- Conversation so far ---\n\n";
         foreach ($messages as $m)
             $t .= ($m['role'] === 'assistant' ? 'Amara' : 'Student') . ': ' . $m['content'] . "\n\n";
-        $t .= 'Reply to the student\'s last message as Amara.';
-        return gemini_generate([['role' => 'user', 'parts' => [['text' => $t]]]]);
+        $t .= 'Now reply to the student\'s last message as Amara, then the <risk> tag on the final line.';
+        return gemini_generate([['role' => 'user', 'parts' => [['text' => $t]]]], false);
     }
 }
 
-function gemini_generate(array $contents): string {
+function gemini_generate(array $contents, bool $with_system): string {
     $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent';
-    $data = ai_http($url, ['x-goog-api-key: ' . GEMINI_API_KEY], [
-        'system_instruction' => ['parts' => [['text' => SYSTEM_PROMPT . EXEMPLARS]]],
-        'contents' => $contents,
-        'generationConfig' => ['maxOutputTokens' => 1000],
-    ]);
+    $payload = ['contents' => $contents, 'generationConfig' => ['maxOutputTokens' => 1000]];
+    if ($with_system) $payload['system_instruction'] = ['parts' => [['text' => SYSTEM_PROMPT . EXEMPLARS]]];
+    $data = ai_http($url, ['x-goog-api-key: ' . GEMINI_API_KEY], $payload);
     $raw = '';
     foreach (($data['candidates'][0]['content']['parts'] ?? []) as $p) $raw .= $p['text'] ?? '';
     return trim($raw);
