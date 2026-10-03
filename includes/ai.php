@@ -77,7 +77,10 @@ function ai_http(string $url, array $headers, array $payload): array {
     $res = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    if ($res === false || $code >= 400) throw new RuntimeException('AI API unavailable (HTTP ' . $code . ')');
+    if ($res === false || $code >= 400) {
+        error_log('AI call failed [' . (defined('AI_PROVIDER') ? AI_PROVIDER : '?') . '] HTTP ' . $code . ': ' . substr((string)$res, 0, 300));
+        throw new RuntimeException('AI API unavailable (HTTP ' . $code . ')');
+    }
     return json_decode($res, true) ?: [];
 }
 
