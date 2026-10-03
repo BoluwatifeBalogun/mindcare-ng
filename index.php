@@ -10,7 +10,7 @@ page_head('Welcome');
   <h1 class="mc-serif fw-semibold mt-4" style="font-size:2.4rem;line-height:1.15">It's okay to not be okay.<br><span class="shimmer">Talk to Amara.</span></h1>
   <p class="mt-3" style="color:rgba(65,41,127,.75)">Confidential AI counselling for Nigerian students, any hour of the day. Built to listen first, and to connect you with a real campus counsellor whenever you need one.</p>
 
-  <img src="assets/img/hero-counselling.svg" alt="Illustration of a student talking with a campus counsellor" class="hero-ill msg-in">
+  <img src="assets/img/hero-counselling.png" alt="Illustration of a student talking with a campus counsellor" class="hero-ill msg-in">
 
   <div class="glass-deep p-4 w-100 mt-4 text-start" id="authCard">
     <div class="d-flex gap-2 mb-3">
