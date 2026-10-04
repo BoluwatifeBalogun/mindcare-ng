@@ -16,4 +16,6 @@ define('ANTHROPIC_MODEL', getenv('ANTHROPIC_MODEL') ?: 'claude-sonnet-4-6');
 define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: '');                  // aistudio.google.com (free tier)
 define('GEMINI_MODEL', getenv('GEMINI_MODEL') ?: 'gemini-3.8-flash');
 define('GEMINI_FALLBACK_MODEL', getenv('GEMINI_FALLBACK_MODEL') ?: '');  // optional second model tried when the first is unavailable
+define('GROQ_API_KEY', getenv('GROQ_API_KEY') ?: '');                      // console.groq.com (free tier, no card)
+define('GROQ_MODEL', getenv('GROQ_MODEL') ?: 'llama-3.3-70b-versatile');
 define('APP_NAME', 'MindCare NG');
