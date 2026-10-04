@@ -57,7 +57,11 @@ function ask_amara(array $messages, ?string $context_note = null): array {
         $messages[$last]['content'] .= "\n\n[Context from the app, not from the student: {$context_note}]";
     }
     $provider = defined('AI_PROVIDER') ? AI_PROVIDER : 'anthropic';
-    $raw = $provider === 'gemini' ? call_gemini($messages) : call_anthropic($messages);
+    $raw = match ($provider) {
+        'gemini' => call_gemini($messages),
+        'groq'   => call_groq($messages),
+        default  => call_anthropic($messages),
+    };
     $risk = 'low';
     if (preg_match('/<risk>(low|moderate|high)<\/risk>/i', $raw, $m)) $risk = strtolower($m[1]);
     $text = trim(preg_replace('/<risk>(low|moderate|high)<\/risk>/i', '', $raw));
@@ -105,7 +109,39 @@ function call_anthropic(array $messages): string {
 
 /** Gemini: system prompt as system_instruction, role 'assistant' becomes 'model'.
     Same <risk> tag convention; the prompt instructs it identically. */
+/** Groq (OpenAI-compatible): free tier at console.groq.com, serves Llama models.
+    System prompt rides as the first message; same <risk> tag convention. */
+function call_groq(array $messages): string {
+    $msgs = array_merge(
+        [['role' => 'system', 'content' => SYSTEM_PROMPT . EXEMPLARS]],
+        $messages
+    );
+    $data = ai_http('https://api.groq.com/openai/v1/chat/completions',
+        ['Authorization: Bearer ' . GROQ_API_KEY],
+        ['model' => GROQ_MODEL, 'max_tokens' => 1000, 'messages' => $msgs]);
+    $raw = trim((string)($data['choices'][0]['message']['content'] ?? ''));
+    if ($raw === '') {
+        error_log('Groq empty response: ' . substr(json_encode($data), 0, 300));
+        throw new RuntimeException('AI returned empty response');
+    }
+    return $raw;
+}
+
 function call_gemini(array $messages): string {
+    $primary = GEMINI_MODEL;
+    $fallback = defined('GEMINI_FALLBACK_MODEL') ? GEMINI_FALLBACK_MODEL : '';
+    try {
+        return gemini_model_call($messages, $primary);
+    } catch (RuntimeException $e) {
+        /* Model-level failover: when the primary model is exhausted (e.g. 503
+           peak-hour congestion after all retries), try the second model. */
+        if ($fallback === '' || $fallback === $primary) throw $e;
+        error_log('Gemini primary "' . $primary . '" failed (' . $e->getMessage() . '); failing over to "' . $fallback . '"');
+        return gemini_model_call($messages, $fallback);
+    }
+}
+
+function gemini_model_call(array $messages, string $model): string {
     $contents = [];
     foreach ($messages as $m) {
         $contents[] = [
@@ -114,7 +150,7 @@ function call_gemini(array $messages): string {
         ];
     }
     try {
-        return gemini_generate($contents, true);
+        return gemini_generate($contents, true, $model);
     } catch (RuntimeException $e) {
         /* Some lightweight models reject multi-turn history or the separate
            system_instruction field. On any 400, retry once with the barest
@@ -126,16 +162,34 @@ function call_gemini(array $messages): string {
         foreach ($messages as $m)
             $t .= ($m['role'] === 'assistant' ? 'Amara' : 'Student') . ': ' . $m['content'] . "\n\n";
         $t .= 'Now reply to the student\'s last message as Amara, then the <risk> tag on the final line.';
-        return gemini_generate([['role' => 'user', 'parts' => [['text' => $t]]]], false);
+        return gemini_generate([['role' => 'user', 'parts' => [['text' => $t]]]], false, $model);
     }
 }
 
-function gemini_generate(array $contents, bool $with_system): string {
-    $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent';
-    $payload = ['contents' => $contents, 'generationConfig' => ['maxOutputTokens' => 1000]];
+function gemini_generate(array $contents, bool $with_system, string $model): string {
+    $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent';
+    $payload = [
+        'contents' => $contents,
+        'generationConfig' => ['maxOutputTokens' => 1000],
+        /* Counselling conversations mention distress by nature; default content
+           filters over-block supportive replies (silent empty 200s). Only
+           high-severity content is blocked here - crisis handling is the job
+           of the app's own risk pipeline, which runs regardless. */
+        'safetySettings' => [
+            ['category' => 'HARM_CATEGORY_HARASSMENT',        'threshold' => 'BLOCK_ONLY_HIGH'],
+            ['category' => 'HARM_CATEGORY_HATE_SPEECH',       'threshold' => 'BLOCK_ONLY_HIGH'],
+            ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_ONLY_HIGH'],
+            ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_ONLY_HIGH'],
+        ],
+    ];
     if ($with_system) $payload['system_instruction'] = ['parts' => [['text' => SYSTEM_PROMPT . EXEMPLARS]]];
     $data = ai_http($url, ['x-goog-api-key: ' . GEMINI_API_KEY], $payload);
     $raw = '';
     foreach (($data['candidates'][0]['content']['parts'] ?? []) as $p) $raw .= $p['text'] ?? '';
-    return trim($raw);
+    $raw = trim($raw);
+    if ($raw === '') {
+        error_log('Gemini empty/blocked response [' . $model . ']: ' . substr(json_encode($data), 0, 300));
+        throw new RuntimeException('AI returned empty response');
+    }
+    return $raw;
 }
