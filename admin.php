@@ -36,7 +36,20 @@ page_head('Admin');
     <input id="s_hours" type="number" min="1" class="form-control mb-3">
     <button class="btn glow-btn px-4 py-2" id="saveBtn" onclick="saveSettings()">Save settings</button>
   </div>
-  <div class="glass p-4"><h4 class="mc-serif fs-6 fw-semibold mb-2">User management</h4><div id="userList"></div></div>
+  <div class="glass p-4"><h4 class="mc-serif fs-6 fw-semibold mb-2">User management</h4>
+    <div class="p-3 mb-3" style="background:rgba(124,92,224,.08);border-radius:16px">
+      <div style="font-size:.78rem;font-weight:700;color:rgba(65,41,127,.7)" class="mb-2">Add staff account</div>
+      <div class="row g-2">
+        <div class="col-md-6"><input id="ns_name" class="form-control" placeholder="Full name (e.g. Dr. Okafor N.)"></div>
+        <div class="col-md-6"><input id="ns_user" class="form-control" placeholder="Username (e.g. okafor.n)"></div>
+        <div class="col-md-6"><input id="ns_pass" type="password" class="form-control" placeholder="Password (min 8 chars)"></div>
+        <div class="col-md-3"><select id="ns_role" class="form-select"><option value="counsellor">Counsellor</option><option value="admin">Admin</option></select></div>
+        <div class="col-md-3"><input id="ns_title" class="form-control" placeholder="Title (optional)"></div>
+      </div>
+      <button class="btn glow-btn px-4 py-2 mt-2" id="addStaffBtn" onclick="addStaff()">Create account</button>
+      <span id="ns_msg" style="font-size:.78rem;margin-left:.6rem"></span>
+    </div>
+    <div id="userList"></div></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
@@ -47,13 +60,26 @@ async function api(url,data){const o=data?{method:'POST',headers:{'Content-Type'
 new Chart($('usage'),{type:'bar',data:{labels:<?= json_encode(array_column($usage, 'm')) ?>,
   datasets:[{data:<?= json_encode(array_map('intval', array_column($usage, 'c'))) ?>,backgroundColor:'#7C5CE0',borderRadius:8}]},
   options:{plugins:{legend:{display:false}}}});
-(async()=>{
-  const s=(await api('api/settings.php')).settings;
-  $('s_line').value=s.crisis_line||'112'; $('s_centre').value=s.centre||''; $('s_hours').value=s.follow_up_hours||48;
+async function loadUsers(){
   const uj=await api('api/users.php');
   $('userList').innerHTML=uj.users.map(x=>`<div class="d-flex gap-2 align-items-center p-2 mb-1" style="background:rgba(255,255,255,.6);border-radius:14px;font-size:.88rem">
     <div class="flex-fill"><b>${esc(x.name)}</b><div style="font-size:.72rem;color:rgba(65,41,127,.6)">${esc(x.username)} · ${esc(x.title||x.dept||'')}</div></div>
     <span class="pill ${x.role==='student'?'pill-violet':x.role==='counsellor'?'pill-green':'pill-amber'}">${esc(x.role)}</span></div>`).join('');
+}
+async function addStaff(){
+  const m=$('ns_msg'); m.style.color='rgba(65,41,127,.7)'; m.textContent='Creating…';
+  try{
+    const j=await api('api/users.php',{name:$('ns_name').value,username:$('ns_user').value,
+      password:$('ns_pass').value,role:$('ns_role').value,title:$('ns_title').value});
+    m.style.color='#2e7d5b'; m.textContent=`Created ${j.created} ✓`;
+    ['ns_name','ns_user','ns_pass','ns_title'].forEach(i=>$(i).value='');
+    await loadUsers();
+  }catch(e){ m.style.color='#b3564b'; m.textContent=e.message; }
+}
+(async()=>{
+  const s=(await api('api/settings.php')).settings;
+  $('s_line').value=s.crisis_line||'112'; $('s_centre').value=s.centre||''; $('s_hours').value=s.follow_up_hours||48;
+  await loadUsers();
 })();
 async function saveSettings(){
   await api('api/settings.php',{crisis_line:$('s_line').value,centre:$('s_centre').value,follow_up_hours:$('s_hours').value});
