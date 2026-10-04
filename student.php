@@ -128,14 +128,15 @@ async function sendMsg(ev){ ev.preventDefault();
 }
 function showCrisis(info){
   const d = document.createElement('div');
+  d.id='crisisOverlay';
   d.style.cssText='position:fixed;inset:0;z-index:50;background:rgba(46,16,101,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1rem';
   d.innerHTML = `<div class="glass-deep risk-ring p-4 msg-in" style="max-width:420px;width:100%">
     <h3 class="mc-serif fs-5 fw-semibold">You deserve support right now</h3>
     <p style="font-size:.9rem;color:rgba(65,41,127,.85)">What you're carrying sounds heavy, and you shouldn't carry it alone. A human counsellor has been notified and can see you quickly.</p>
-    <button class="btn glow-btn w-100 py-2 mb-2" onclick="this.closest('div[style]').remove();showTab('sessions')">Book an urgent session</button>
+    <button class="btn glow-btn w-100 py-2 mb-2" onclick="document.getElementById('crisisOverlay').remove();showTab('sessions')">Book an urgent session</button>
     <a class="btn glass w-100 py-2 mb-2 fw-semibold" style="border-radius:16px" href="tel:${esc(info.line)}">Emergency line: ${esc(info.line)} (Nigeria)</a>
     <div class="text-center" style="font-size:.72rem;color:rgba(65,41,127,.7)">${esc(info.centre)}. Your conversation stays confidential.</div>
-    <button class="btn w-100 mt-2" style="color:#6D28D9;font-size:.85rem" onclick="this.parentElement.parentElement.remove()">Continue talking with Amara</button>
+    <button class="btn w-100 mt-2" style="color:#6D28D9;font-size:.85rem" onclick="document.getElementById('crisisOverlay').remove()">Continue talking with Amara</button>
   </div>`;
   document.body.appendChild(d);
 }
