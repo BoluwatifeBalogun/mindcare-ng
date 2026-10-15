@@ -178,36 +178,66 @@ a{ color:var(--deep); }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 991.98px){
-  .rail{ position:fixed; bottom:10px; left:10px; right:10px; z-index:55;
+  /* the section panels dissolve: content sits directly on the cream canvas,
+     so inner cards get the full width instead of nesting card-in-card */
+  .has-rail > section{ background:transparent; border:0; box-shadow:none; padding:0; }
+  .has-rail > section .glass, .has-rail > section .glass-deep{
+    background:var(--card); border:1px solid var(--line-card);
+    box-shadow:0 1px 2px rgba(46,75,64,.05); }
+  #chatBox{ background:var(--well); }
+
+  /* student rail becomes a bottom tab bar */
+  .rail{ position:fixed; bottom:calc(10px + env(safe-area-inset-bottom)); left:10px; right:10px; z-index:55;
     display:flex; justify-content:space-around; padding:.4rem!important; border-radius:18px;
-    box-shadow:0 10px 30px -10px rgba(46,75,64,.4); }
+    background:var(--card); box-shadow:0 10px 30px -8px rgba(46,75,64,.45); }
   .rail .tabbtn{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
     font-size:.6rem; padding:.42rem .2rem; }
   .rail .tabbtn.active::after{ display:none; }
   .rail .tabbtn::before{ content:''; width:19px; height:19px; background:currentColor;
     -webkit-mask:var(--icon) center/contain no-repeat; mask:var(--icon) center/contain no-repeat; }
-  .has-rail{ padding-bottom:92px; }
+  .has-rail{ padding-bottom:96px; }
 }
 @media (max-width: 575.98px){
-  .mc-content{ padding-left:10px; padding-right:10px }
-  .mc-content:has(> header){ padding-top:76px; }
+  .mc-content{ padding-left:12px; padding-right:12px }
+  .mc-content:has(> header){ padding-top:72px; }
   .mc-content > header{ padding:.5rem .8rem!important; gap:.45rem!important }
   .mc-content header .orb{ width:30px!important; height:30px!important }
   .mc-content header .fs-5{ font-size:1rem!important; white-space:nowrap }
   .mc-content header .unitline{ display:none!important }
   .mc-content header .pill{ font-size:.62rem; padding:.3rem .55rem }
   .mc-content header .btn{ padding:.3rem .7rem; font-size:.78rem; white-space:nowrap }
+
+  /* calmer type scale and tighter cards on small screens */
   .mc-content .p-4{ padding:1rem!important }
-  .mc-content .p-3{ padding:.8rem!important }
-  .bubble-user,.bubble-ai,.bubble-couns{ max-width:92%!important; font-size:.93rem!important }
-  #chatBox{ min-height:42vh; max-height:52vh }
-  .mc-content input.form-control,.mc-content textarea.form-control,.mc-content select.form-select{ font-size:16px }
-  .mc-content table{ display:block; overflow-x:auto }
-  .ill-sm{ width:96px; flex-basis:96px }
-  .tear{ margin-left:-1rem; margin-right:-1rem }
+  .mc-content .p-3{ padding:.85rem!important }
+  .mc-content h3.fs-5{ font-size:1.08rem!important }
+  .mc-content h4.fs-6{ font-size:.95rem!important }
+  .glass, .glass-deep{ border-radius:16px; }
+
+  /* tab heroes: smaller art, text keeps room to breathe */
+  .tab-hero{ gap:.7rem; }
+  .ill-sm{ width:86px; flex-basis:86px }
+  .tab-hero .lead-sm{ font-size:.76rem }
+
+  .session-banner{ padding:.7rem .8rem; border-radius:14px }
+  .session-banner .orb{ width:36px!important; height:36px!important }
   .session-banner .sb-chip{ display:none }
+
+  .bubble-user,.bubble-ai,.bubble-couns{ max-width:88%!important; font-size:.92rem!important }
+  #chatBox{ min-height:46vh; max-height:54vh; padding:.65rem }
+  .mc-content input.form-control,.mc-content textarea.form-control,.mc-content select.form-select{ font-size:16px }
+  .mood-btn{ min-width:0; padding:.5rem .35rem }
+  .tear{ margin-left:-1rem; margin-right:-1rem }
+  .mc-content table{ display:block; overflow-x:auto }
+
+  /* auth stacks: brand band on top, form below */
   .auth-wrap{ flex-direction:column; }
-  .auth-side{ flex:none; max-width:none; padding:1.5rem 1.2rem 1.7rem; justify-content:flex-start; }
+  .auth-side{ flex:none; max-width:none; padding:1.4rem 1.2rem 1.5rem; justify-content:flex-start; gap:.8rem; }
+  .auth-side h1{ font-size:1.65rem; }
+  .auth-side .lede{ font-size:.88rem; }
   .auth-side .ill-frame{ display:none; }
-  .auth-main{ justify-content:flex-start; padding-top:1.6rem; }
+  .auth-side .trust-list{ gap:.4rem }
+  .auth-side .trust-list li{ font-size:.8rem }
+  .auth-main{ justify-content:flex-start; padding:1.4rem 1rem; }
+  .auth-main #authCard{ padding:1.15rem; }
 }
