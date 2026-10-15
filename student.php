@@ -218,7 +218,14 @@ async function submitAssess(){
 }
 
 /* ---------- Sessions & History ---------- */
-["Thu 11 Sep, 14:00","Fri 12 Sep, 09:00","Fri 12 Sep, 15:00","Mon 15 Sep, 10:00"].forEach(s=>{
+/* Offer the next four weekdays from today (demo slots; a live rollout would
+   read each counsellor's real availability) */
+(()=>{const dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+tm=['09:00','14:00','10:00','15:00'],out=[],d=new Date();
+while(out.length<4){d.setDate(d.getDate()+1);if(d.getDay()===0||d.getDay()===6)continue;
+out.push(dn[d.getDay()]+' '+d.getDate()+' '+mn[d.getMonth()]+', '+tm[out.length]);}
+window._slotList=out;})();
+window._slotList.forEach(s=>{
   const b=document.createElement('button'); b.type='button'; b.textContent=s;
   b.className='btn py-2'; b.style.cssText='border-radius:16px;background:rgba(255,255,255,.9);font-size:.85rem;font-weight:600';
   b.onclick=()=>{window._slot=s;[...$('slotGrid').children].forEach(c=>{c.classList.remove('glow-btn');c.style.background='rgba(255,255,255,.9)'});b.classList.add('glow-btn')};
