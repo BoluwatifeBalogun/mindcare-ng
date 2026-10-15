@@ -14,7 +14,24 @@ page_head('Your space');
       <button class="tabbtn flex-fill <?= $k === 'chat' ? 'active' : '' ?>" data-tab="<?= $k ?>" onclick="showTab('<?= $k ?>')"><?= $t ?></button>
     <?php endforeach; ?>
   </div>
-  <script>document.querySelectorAll('.rail .tabbtn').forEach(b=>b.addEventListener('click',()=>document.querySelector('.mc-content').classList.remove('nav-open')));</script>
+  <script>
+document.querySelectorAll('.rail .tabbtn').forEach(b=>b.addEventListener('click',()=>document.querySelector('.mc-content').classList.remove('nav-open')));
+/* Size the chat to the real visible window (viewport units mis-measure on
+   mobile browsers with collapsing URL bars), so the composer sits exactly
+   at the bottom and the page itself never scrolls on the Talk tab. */
+function fitChat(){
+  const c = document.getElementById('tab-chat');
+  if(!c) return;
+  if(window.innerWidth < 992){
+    c.style.height = '';
+    const top = c.getBoundingClientRect().top + window.scrollY;
+    c.style.height = (window.innerHeight - top - 16) + 'px';
+  } else c.style.height = '';
+}
+addEventListener('resize', fitChat);
+addEventListener('load', fitChat);
+fitChat();
+</script>
 
   <!-- TALK -->
   <section id="tab-chat">
