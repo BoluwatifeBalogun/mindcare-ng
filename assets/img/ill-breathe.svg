@@ -1,0 +1,38 @@
+<svg viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A student sitting cross-legged, taking a slow breath">
+  <path d="M46 150 C34 92 96 46 182 48 C272 50 330 92 322 152 C315 204 252 230 176 228 C100 226 56 202 46 150 Z" fill="#F3EDDE"/>
+  <ellipse cx="180" cy="208" rx="118" ry="16" fill="#E9E2D1"/>
+  <!-- breath arcs -->
+  <g fill="none" stroke="#EDB380" stroke-linecap="round">
+    <path d="M142 70 a44 44 0 0 1 76 0" stroke-width="5" opacity=".95"/>
+    <path d="M128 54 a62 62 0 0 1 104 0" stroke-width="4" opacity=".6"/>
+    <path d="M114 38 a80 80 0 0 1 132 0" stroke-width="3" opacity=".32"/>
+  </g>
+  <!-- plant -->
+  <g>
+    <ellipse cx="292" cy="168" rx="6" ry="22" fill="#44685A" transform="rotate(-14 292 168)"/>
+    <ellipse cx="305" cy="170" rx="6" ry="26" fill="#7FA590"/>
+    <ellipse cx="317" cy="170" rx="5" ry="20" fill="#44685A" transform="rotate(13 317 170)"/>
+    <path d="M288 190 h36 l-4 28 h-28 Z" fill="#D97706"/>
+    <path d="M286 186 h40 v7 h-40 Z" fill="#B45309"/>
+  </g>
+  <!-- figure, cross-legged -->
+  <g>
+    <!-- legs folded -->
+    <path d="M130 196 q14 -22 50 -22 q36 0 50 22 q-18 10 -50 10 q-32 0 -50 -10 Z" fill="#42525C"/>
+    <!-- torso -->
+    <path d="M152 196 L152 136 C152 114 164 104 180 104 C196 104 208 114 208 136 L208 196 Z" fill="#2E4B40"/>
+    <!-- arms resting to knees -->
+    <path d="M156 136 C142 154 136 168 136 182" fill="none" stroke="#263F36" stroke-width="13" stroke-linecap="round"/>
+    <path d="M204 136 C218 154 224 168 224 182" fill="none" stroke="#263F36" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="136" cy="187" r="7.5" fill="#6B4423"/>
+    <circle cx="224" cy="187" r="7.5" fill="#6B4423"/>
+    <!-- head -->
+    <circle cx="180" cy="84" r="21" fill="#6B4423"/>
+    <path d="M159 84 a21 21 0 1 1 42 0 l-4 0 a17 17 0 0 0 -34 0 Z" fill="#15100C"/>
+    <path d="M160 84 a20 20 0 0 1 40 -5 a23 19 0 0 0 -40 5 Z" fill="#15100C"/>
+    <!-- closed eyes + soft smile -->
+    <path d="M171 88 q3 2.4 6 0" stroke="#3A2410" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M186 88 q3 2.4 6 0" stroke="#3A2410" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M175 97 q5 3.6 10 0" stroke="#3A2410" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

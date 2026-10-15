@@ -15,30 +15,30 @@ page_head('Admin');
   <div class="row g-2 mb-3">
     <?php foreach ([[$stats['students'], 'Students'], [$stats['referrals'], 'Referrals'], [$stats['sessions'], 'AI messages']] as [$v, $l]): ?>
       <div class="col-4"><div class="glass p-3 text-center">
-        <div class="mc-serif fw-bold fs-4" style="color:#5B21B6"><?= $v ?></div>
-        <div style="font-size:.7rem;font-weight:700;color:rgba(65,41,127,.6)"><?= $l ?></div></div></div>
+        <div class="mc-serif fw-bold fs-4" style="color:#263F36"><?= $v ?></div>
+        <div style="font-size:.7rem;font-weight:700;color:rgba(34,52,44,.58)"><?= $l ?></div></div></div>
     <?php endforeach; ?>
   </div>
   <div class="glass p-4 mb-3">
     <div class="d-flex align-items-center mb-2">
       <h4 class="mc-serif fs-6 fw-semibold mb-0">AI counselling messages per month</h4>
-      <a class="btn btn-sm ms-auto px-3" style="background:#EDE9FE;color:#5B21B6;border-radius:12px;font-weight:700" href="api/report.php">Export report</a>
+      <a class="btn btn-sm ms-auto px-3" style="background:#EFE9DC;color:#263F36;border-radius:12px;font-weight:700" href="api/report.php">Export report</a>
     </div>
     <canvas id="usage" height="150"></canvas>
   </div>
   <div class="glass p-4 mb-3">
     <h4 class="mc-serif fs-6 fw-semibold mb-2">System settings</h4>
-    <label class="form-label" style="font-size:.75rem;font-weight:700;color:rgba(65,41,127,.7)">Emergency line shown to students</label>
+    <label class="form-label" style="font-size:.75rem;font-weight:700;color:rgba(34,52,44,.68)">Emergency line shown to students</label>
     <input id="s_line" class="form-control mb-2">
-    <label class="form-label" style="font-size:.75rem;font-weight:700;color:rgba(65,41,127,.7)">Campus counselling centre details</label>
+    <label class="form-label" style="font-size:.75rem;font-weight:700;color:rgba(34,52,44,.68)">Campus counselling centre details</label>
     <input id="s_centre" class="form-control mb-2">
-    <label class="form-label" style="font-size:.75rem;font-weight:700;color:rgba(65,41,127,.7)">Auto follow-up window (hours)</label>
+    <label class="form-label" style="font-size:.75rem;font-weight:700;color:rgba(34,52,44,.68)">Auto follow-up window (hours)</label>
     <input id="s_hours" type="number" min="1" class="form-control mb-3">
     <button class="btn glow-btn px-4 py-2" id="saveBtn" onclick="saveSettings()">Save settings</button>
   </div>
   <div class="glass p-4"><h4 class="mc-serif fs-6 fw-semibold mb-2">User management</h4>
-    <div class="p-3 mb-3" style="background:rgba(124,92,224,.08);border-radius:16px">
-      <div style="font-size:.78rem;font-weight:700;color:rgba(65,41,127,.7)" class="mb-2">Add staff account</div>
+    <div class="p-3 mb-3" style="background:rgba(46,75,64,.06);border-radius:16px">
+      <div style="font-size:.78rem;font-weight:700;color:rgba(34,52,44,.68)" class="mb-2">Add staff account</div>
       <div class="row g-2">
         <div class="col-md-6"><input id="ns_name" class="form-control" placeholder="Full name (e.g. Dr. Okafor N.)"></div>
         <div class="col-md-6"><input id="ns_user" class="form-control" placeholder="Username (e.g. okafor.n)"></div>
@@ -58,23 +58,23 @@ const esc=s=>{const d=document.createElement('div');d.textContent=s??'';return d
 async function api(url,data){const o=data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{};
   const r=await fetch(url,o);const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Request failed');return j;}
 new Chart($('usage'),{type:'bar',data:{labels:<?= json_encode(array_column($usage, 'm')) ?>,
-  datasets:[{data:<?= json_encode(array_map('intval', array_column($usage, 'c'))) ?>,backgroundColor:'#7C5CE0',borderRadius:8}]},
+  datasets:[{data:<?= json_encode(array_map('intval', array_column($usage, 'c'))) ?>,backgroundColor:'#2E4B40',borderRadius:8}]},
   options:{plugins:{legend:{display:false}}}});
 async function loadUsers(){
   const uj=await api('api/users.php');
-  $('userList').innerHTML=uj.users.map(x=>`<div class="d-flex gap-2 align-items-center p-2 mb-1" style="background:rgba(255,255,255,.6);border-radius:14px;font-size:.88rem">
-    <div class="flex-fill"><b>${esc(x.name)}</b><div style="font-size:.72rem;color:rgba(65,41,127,.6)">${esc(x.username)} · ${esc(x.title||x.dept||'')}</div></div>
+  $('userList').innerHTML=uj.users.map(x=>`<div class="d-flex gap-2 align-items-center p-2 mb-1" style="background:#FFFFFF;border-radius:14px;font-size:.88rem">
+    <div class="flex-fill"><b>${esc(x.name)}</b><div style="font-size:.72rem;color:rgba(34,52,44,.58)">${esc(x.username)} · ${esc(x.title||x.dept||'')}</div></div>
     <span class="pill ${x.role==='student'?'pill-violet':x.role==='counsellor'?'pill-green':'pill-amber'}">${esc(x.role)}</span></div>`).join('');
 }
 async function addStaff(){
-  const m=$('ns_msg'); m.style.color='rgba(65,41,127,.7)'; m.textContent='Creating…';
+  const m=$('ns_msg'); m.style.color='rgba(34,52,44,.68)'; m.textContent='Creating…';
   try{
     const j=await api('api/users.php',{name:$('ns_name').value,username:$('ns_user').value,
       password:$('ns_pass').value,role:$('ns_role').value,title:$('ns_title').value});
-    m.style.color='#2e7d5b'; m.textContent=`Created ${j.created} ✓`;
+    m.style.color='#44685A'; m.textContent=`Created ${j.created} ✓`;
     ['ns_name','ns_user','ns_pass','ns_title'].forEach(i=>$(i).value='');
     await loadUsers();
-  }catch(e){ m.style.color='#b3564b'; m.textContent=e.message; }
+  }catch(e){ m.style.color='#B1543F'; m.textContent=e.message; }
 }
 (async()=>{
   const s=(await api('api/settings.php')).settings;

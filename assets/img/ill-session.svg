@@ -1,0 +1,30 @@
+<svg viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A booked counselling session on a calendar">
+  <path d="M46 148 C36 92 98 46 182 48 C270 50 328 92 320 150 C313 202 252 230 178 228 C102 226 56 200 46 148 Z" fill="#F3EDDE"/>
+  <ellipse cx="180" cy="208" rx="112" ry="15" fill="#E9E2D1"/>
+  <!-- calendar card -->
+  <g>
+    <rect x="96" y="66" width="140" height="130" rx="14" fill="#FFFFFF" stroke="#E7DFCE"/>
+    <path d="M96 80 a14 14 0 0 1 14 -14 h112 a14 14 0 0 1 14 14 v22 H96 Z" fill="#2E4B40"/>
+    <rect x="118" y="56" width="10" height="20" rx="5" fill="#263F36"/>
+    <rect x="204" y="56" width="10" height="20" rx="5" fill="#263F36"/>
+    <g fill="#E7DFCE">
+      <circle cx="122" cy="124" r="7"/><circle cx="150" cy="124" r="7"/><circle cx="178" cy="124" r="7"/><circle cx="206" cy="124" r="7"/>
+      <circle cx="122" cy="150" r="7"/><circle cx="178" cy="150" r="7"/><circle cx="206" cy="150" r="7"/>
+      <circle cx="122" cy="176" r="7"/><circle cx="150" cy="176" r="7"/>
+    </g>
+    <circle cx="150" cy="150" r="11" fill="#EDB380"/>
+    <path d="M145.5 150.5 l3.2 3.2 6-6" stroke="#2E4B40" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- speech bubble with heart -->
+  <g>
+    <rect x="216" y="108" width="84" height="56" rx="18" fill="#2E4B40"/>
+    <path d="M238 164 l8 16 10 -16 Z" fill="#2E4B40"/>
+    <path d="M258 126 c-5 -8 -16 -4 -16 4 c0 7 9 12 16 17 c7 -5 16 -10 16 -17 c0 -8 -11 -12 -16 -4 Z" fill="#EDB380"/>
+  </g>
+  <!-- leaf sprig -->
+  <g>
+    <path d="M66 190 q2 -26 20 -38" fill="none" stroke="#44685A" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="88" cy="148" rx="6" ry="12" fill="#7FA590" transform="rotate(32 88 148)"/>
+    <ellipse cx="72" cy="168" rx="5" ry="10" fill="#44685A" transform="rotate(-24 72 168)"/>
+  </g>
+</svg>

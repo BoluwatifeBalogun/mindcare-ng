@@ -1,0 +1,98 @@
+<svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A counsellor and a student sitting together in a supportive conversation">
+  <defs>
+    <linearGradient id="bgG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7F3EA"/><stop offset="1" stop-color="#EDE6D6"/>
+    </linearGradient>
+    <radialGradient id="orbG" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#E8C49A"/><stop offset="0.6" stop-color="#44685A"/><stop offset="1" stop-color="#2E4B40"/>
+    </radialGradient>
+  </defs>
+
+  <!-- soft background blob -->
+  <path d="M60 170 C40 90 140 28 280 32 C430 36 532 92 520 178 C510 246 420 282 272 280 C140 278 78 240 60 170 Z" fill="url(#bgG)"/>
+  <!-- ground -->
+  <ellipse cx="280" cy="260" rx="212" ry="24" fill="#E9E2D1" opacity="0.65"/>
+
+  <!-- sparkles -->
+  <g fill="#E8C49A">
+    <path d="M330 34 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z"/>
+    <path d="M488 86 l2.4 5.6 5.6 2.4 -5.6 2.4 -2.4 5.6 -2.4 -5.6 -5.6 -2.4 5.6 -2.4 Z" opacity="0.8"/>
+    <circle cx="120" cy="92" r="3" opacity="0.7"/>
+  </g>
+
+  <!-- plant -->
+  <g>
+    <ellipse cx="513" cy="196" rx="7" ry="26" fill="#44685A" transform="rotate(-14 513 196)"/>
+    <ellipse cx="528" cy="198" rx="7" ry="30" fill="#7FA590"/>
+    <ellipse cx="542" cy="198" rx="6" ry="24" fill="#44685A" transform="rotate(13 542 198)"/>
+    <path d="M508 222 h40 l-5 34 h-30 Z" fill="#D97706" rx="4"/>
+    <path d="M506 218 h44 v8 h-44 Z" fill="#B45309"/>
+  </g>
+
+  <!-- ===== Counsellor (left, facing right) ===== -->
+  <g>
+    <!-- chair -->
+    <rect x="96" y="124" width="24" height="100" rx="12" fill="#EAE3D2"/>
+    <rect x="96" y="198" width="96" height="22" rx="11" fill="#EAE3D2"/>
+    <rect x="106" y="220" width="10" height="30" rx="5" fill="#DCD3BD"/>
+    <rect x="170" y="220" width="10" height="30" rx="5" fill="#DCD3BD"/>
+    <!-- far leg -->
+    <rect x="142" y="184" width="54" height="19" rx="9.5" fill="#35544A"/>
+    <rect x="182" y="192" width="15" height="48" rx="7.5" fill="#35544A"/>
+    <ellipse cx="192" cy="244" rx="15" ry="7" fill="#243830"/>
+    <!-- torso -->
+    <path d="M128 206 L128 158 C128 140 140 132 154 132 C170 132 178 142 178 158 L178 206 Z" fill="#44685A"/>
+    <!-- arm reaching forward, open palm -->
+    <path d="M166 156 C188 160 202 168 212 176" fill="none" stroke="#3A5C4E" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="218" cy="179" r="8" fill="#8D5524"/>
+    <!-- head -->
+    <circle cx="150" cy="108" r="22" fill="#8D5524"/>
+    <path d="M128 104 C128 88 138 80 150 80 C162 80 172 88 172 102 C166 92 158 88 150 88 C140 88 132 94 128 104 Z" fill="#241711"/>
+    <circle cx="131" cy="112" r="9" fill="#241711"/>
+    <circle cx="170" cy="114" r="2.3" fill="#EDA55F"/>
+    <!-- gentle face -->
+    <path d="M154 106 q3 2.6 6 0" stroke="#4A2A12" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M152 116 q6 5 12 0" stroke="#4A2A12" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- ===== Student (right, facing left) ===== -->
+  <g>
+    <!-- pouf -->
+    <ellipse cx="408" cy="222" rx="54" ry="24" fill="#E6DECB"/>
+    <ellipse cx="408" cy="214" rx="54" ry="20" fill="#F0EADA"/>
+    <!-- legs toward counsellor -->
+    <rect x="348" y="192" width="60" height="18" rx="9" fill="#42525C"/>
+    <rect x="348" y="200" width="14" height="44" rx="7" fill="#42525C"/>
+    <ellipse cx="356" cy="242" rx="14" ry="7" fill="#EDBE88"/>
+    <!-- backpack -->
+    <rect x="440" y="152" width="26" height="46" rx="13" fill="#EDA55F" opacity="0.9"/>
+    <!-- torso hoodie -->
+    <path d="M386 210 L386 160 C386 142 398 134 412 134 C428 134 438 144 438 160 L438 210 Z" fill="#2E4B40"/>
+    <path d="M396 150 C402 158 422 158 428 150 L428 160 C420 166 404 166 396 160 Z" fill="#263F36"/>
+    <!-- arms clasped on lap -->
+    <path d="M396 162 C384 176 376 188 372 196" fill="none" stroke="#263F36" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="370" cy="199" r="7.5" fill="#6B4423"/>
+    <!-- head -->
+    <circle cx="412" cy="112" r="21" fill="#6B4423"/>
+    <path d="M390 112 a22 22 0 1 1 44 0 l-4 0 a18 18 0 0 0 -36 0 Z" fill="#15100C"/>
+    <path d="M391 112 a21 21 0 0 1 42 -6 a24 20 0 0 0 -42 6 Z" fill="#15100C"/>
+    <!-- gentle face (facing left) -->
+    <path d="M402 110 q-3 2.6 -6 0" stroke="#3A2410" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M398 120 q-5 4 -10 0" stroke="#3A2410" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- speech: counsellor bubble with heart -->
+  <g>
+    <rect x="212" y="78" width="66" height="46" rx="17" fill="#FFFFFF" opacity="0.94" stroke="#E7DFCE"/>
+    <path d="M228 120 l10 12 2 -14 Z" fill="#FFFFFF" opacity="0.94"/>
+    <path d="M245 93 c-4 -7 -14 -4 -14 3 c0 6 8 11 14 15 c6 -4 14 -9 14 -15 c0 -7 -10 -10 -14 -3 Z" fill="#E58F6B"/>
+  </g>
+  <!-- speech: student dots bubble -->
+  <g>
+    <rect x="316" y="62" width="56" height="36" rx="15" fill="#FFFFFF" opacity="0.94" stroke="#E7DFCE"/>
+    <path d="M352 98 l8 10 2 -12 Z" fill="#FFFFFF" opacity="0.94"/>
+    <circle cx="332" cy="80" r="4" fill="#EDB380"/>
+    <circle cx="344" cy="80" r="4" fill="#44685A"/>
+    <circle cx="356" cy="80" r="4" fill="#2E4B40"/>
+  </g>
+</svg>

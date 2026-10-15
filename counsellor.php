@@ -32,25 +32,25 @@ async function loadRefs(){
       <div class="d-flex gap-2 align-items-center flex-wrap">
         <b>${esc(r.student)}</b>
         <span class="pill ${r.risk==='high'?'pill-red':'pill-amber'}">${r.risk==='high'?'High risk':'Follow up'}</span>
-        <span class="ms-auto" style="font-size:.75rem;color:rgba(65,41,127,.6)">${esc(r.time)}</span></div>
+        <span class="ms-auto" style="font-size:.75rem;color:rgba(34,52,44,.58)">${esc(r.time)}</span></div>
       <p class="mt-2 mb-1" style="font-size:.9rem">${esc(r.summary)}</p>
-      <div style="font-size:.75rem;color:rgba(65,41,127,.6)">Source: ${esc(r.source)}</div>
-      <div id="ctx-${r.id}" class="d-none mt-2 p-3" style="background:rgba(255,255,255,.7);border-radius:16px">
-        ${ctx?ctx.map(m=>`<div style="font-size:.88rem"><b style="color:${m.role==='user'?'#6D28D9':'#047857'}">${m.role==='user'?esc(r.student.split(' ')[0]):'Amara'}:</b> ${esc(m.content||m.text)}</div>`).join(''):'<div style="font-size:.85rem;color:rgba(65,41,127,.7)">No conversation excerpt attached (assessment-based referral).</div>'}
+      <div style="font-size:.75rem;color:rgba(34,52,44,.58)">Source: ${esc(r.source)}</div>
+      <div id="ctx-${r.id}" class="d-none mt-2 p-3" style="background:rgba(255,255,255,.9);border-radius:16px">
+        ${ctx?ctx.map(m=>`<div style="font-size:.88rem"><b style="color:${m.role==='user'?'#263F36':'#44685A'}">${m.role==='user'?esc(r.student.split(' ')[0]):'Amara'}:</b> ${esc(m.content||m.text)}</div>`).join(''):'<div style="font-size:.85rem;color:rgba(34,52,44,.68)">No conversation excerpt attached (assessment-based referral).</div>'}
         <div class="d-flex gap-2 mt-2">
           <input id="rep-${r.id}" class="form-control form-control-sm" placeholder="Send a note to ${esc(r.student.split(' ')[0])}…">
-          <button class="btn btn-sm px-3 text-white" style="background:#059669;border-radius:12px" onclick="sendNote(${r.id},${r.student_id})">Send</button>
+          <button class="btn btn-sm px-3 text-white" style="background:#2E4B40;border-radius:12px" onclick="sendNote(${r.id},${r.student_id})">Send</button>
         </div>
-        <div style="font-size:.68rem;color:rgba(65,41,127,.6)" class="mt-1">Your note appears inside the student's chat, clearly marked as from you.</div>
+        <div style="font-size:.68rem;color:rgba(34,52,44,.58)" class="mt-1">Your note appears inside the student's chat, clearly marked as from you.</div>
       </div>
       <div class="d-flex gap-2 mt-3 flex-wrap">
         ${r.status==='open'
           ? `<button class="btn glow-btn btn-sm px-3 py-2" onclick="takeCase(${r.id})">Take case</button>
-             <button class="btn btn-sm px-3 py-2" style="background:rgba(255,255,255,.7);border-radius:14px;font-weight:600;color:#5B21B6" onclick="$('ctx-${r.id}').classList.toggle('d-none')">Session context & reply</button>`
+             <button class="btn btn-sm px-3 py-2" style="background:rgba(255,255,255,.9);border-radius:14px;font-weight:600;color:#263F36" onclick="$('ctx-${r.id}').classList.toggle('d-none')">Session context & reply</button>`
           : `<span class="pill pill-green">In progress</span>
-             <button class="btn btn-sm px-3 py-1" style="background:rgba(255,255,255,.7);border-radius:14px;font-weight:600;color:#5B21B6" onclick="$('ctx-${r.id}').classList.toggle('d-none')">Context & reply</button>`}
+             <button class="btn btn-sm px-3 py-1" style="background:rgba(255,255,255,.9);border-radius:14px;font-weight:600;color:#263F36" onclick="$('ctx-${r.id}').classList.toggle('d-none')">Context & reply</button>`}
       </div></div>`;
-  }).join('')||'<div class="glass p-4" style="font-size:.9rem;color:rgba(65,41,127,.7)">No referrals yet. High-risk cases from Amara and assessments appear here automatically.</div>';
+  }).join('')||'<div class="glass p-4" style="font-size:.9rem;color:rgba(34,52,44,.68)">No referrals yet. High-risk cases from Amara and assessments appear here automatically.</div>';
 }
 async function takeCase(id){ await api('api/referrals.php',{action:'take',id}); loadRefs(); }
 async function sendNote(rid,sid){
@@ -64,9 +64,9 @@ async function loadAppts(){
     <div class="d-flex gap-2 align-items-center flex-wrap"><b>${esc(a.student)}</b>
       <span class="pill ${a.status==='confirmed'?'pill-green':'pill-amber'}">${esc(a.status)}</span>
       ${a.is_follow_up==1?'<span class="pill pill-violet">follow-up</span>':''}</div>
-    <div class="mt-1">${esc(a.when_text)} · <span style="color:rgba(65,41,127,.7)">${esc(a.reason||'')}</span></div>
+    <div class="mt-1">${esc(a.when_text)} · <span style="color:rgba(34,52,44,.68)">${esc(a.reason||'')}</span></div>
     ${a.status==='pending'?`<button class="btn glow-btn btn-sm px-3 py-2 mt-2" onclick="confirmAp(${a.id})">Confirm slot</button>`:''}</div>`).join('')
-    ||'<div class="glass p-4" style="font-size:.9rem;color:rgba(65,41,127,.7)">No appointments yet.</div>';
+    ||'<div class="glass p-4" style="font-size:.9rem;color:rgba(34,52,44,.68)">No appointments yet.</div>';
 }
 async function confirmAp(id){ await api('api/appointments.php',{action:'confirm',id}); loadAppts(); }
 loadRefs();
