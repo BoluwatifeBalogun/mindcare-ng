@@ -8,11 +8,13 @@ page_head('Your space');
 <div class="mc-content container has-rail" style="max-width:760px">
   <?php page_header($u); ?>
 
+  <div class="nav-scrim" onclick="this.closest('.mc-content').classList.remove('nav-open')"></div>
   <div class="glass-deep p-1 d-flex mb-3 rail" style="border-radius:20px">
     <?php foreach (['chat' => 'Talk', 'mood' => 'Mood', 'assess' => 'Check-in', 'sessions' => 'Sessions', 'history' => 'History'] as $k => $t): ?>
       <button class="tabbtn flex-fill <?= $k === 'chat' ? 'active' : '' ?>" data-tab="<?= $k ?>" onclick="showTab('<?= $k ?>')"><?= $t ?></button>
     <?php endforeach; ?>
   </div>
+  <script>document.querySelectorAll('.rail .tabbtn').forEach(b=>b.addEventListener('click',()=>document.querySelector('.mc-content').classList.remove('nav-open')));</script>
 
   <!-- TALK -->
   <section id="tab-chat">

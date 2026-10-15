@@ -7,7 +7,7 @@ function page_head(string $title): void { ?>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= htmlspecialchars($title) ?> · MindCare NG</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="assets/css/mindcare.css?v=7" rel="stylesheet">
+<link href="assets/css/mindcare.css?v=8" rel="stylesheet">
 </head>
 <body>
 <div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
@@ -21,5 +21,6 @@ function page_header(array $u): void { ?>
   </span>
   <span class="ms-auto pill pill-<?= $u['role'] === 'student' ? 'violet' : ($u['role'] === 'counsellor' ? 'green' : 'amber') ?>"><?= htmlspecialchars($u['role']) ?></span>
   <a class="btn btn-sm glass px-3" style="border-radius:14px" href="api/logout.php">Sign out</a>
+  <button type="button" class="nav-burger" aria-label="Menu" onclick="this.closest('.mc-content').classList.toggle('nav-open')"></button>
 </header>
 <?php } ?>

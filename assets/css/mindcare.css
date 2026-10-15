@@ -136,6 +136,15 @@ a{ color:var(--deep); }
 /* ---------- Crisis: steady, serious, not alarming ---------- */
 .risk-ring{ border-left:4px solid var(--clay)!important; box-shadow:0 18px 48px -18px rgba(177,84,63,.45); }
 
+/* Hamburger (phones/tablets only; desktop keeps the sidebar) */
+.nav-burger{ display:none; width:38px; height:38px; margin-left:.4rem; flex:0 0 38px;
+  border:1px solid var(--line-card); border-radius:12px; background:var(--card); color:var(--ink);
+  align-items:center; justify-content:center; cursor:pointer; }
+.nav-burger::before{ content:''; width:18px; height:18px; background:currentColor;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z'/></svg>") center/contain no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z'/></svg>") center/contain no-repeat; }
+.nav-scrim{ display:none; }
+
 /* ---------- Pills, mood ---------- */
 .pill{ padding:.26rem .7rem; border-radius:9999px; font-size:.72rem; font-weight:700; }
 .pill-violet{ background:#E9EFE6; color:#2E4B40 }
@@ -180,33 +189,37 @@ a{ color:var(--deep); }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 991.98px){
-  /* the section panels dissolve: content sits directly on the cream canvas,
-     so inner cards get the full width instead of nesting card-in-card */
+  /* the section panels dissolve: content sits directly on the cream canvas */
   .has-rail > section{ background:transparent; border:0; box-shadow:none; padding:0; }
   .has-rail > section .glass, .has-rail > section .glass-deep{
     background:var(--card); border:1px solid var(--line-card);
     box-shadow:0 1px 2px rgba(46,75,64,.05); }
-  #chatBox{ background:var(--well); }
+  .has-rail{ padding-bottom:16px; }
 
-  /* student rail becomes a bottom tab bar */
-  .rail{ position:fixed; bottom:calc(10px + env(safe-area-inset-bottom)); left:10px; right:10px; z-index:55;
-    display:flex; justify-content:space-around; padding:.4rem!important; border-radius:18px;
-    background:var(--card); box-shadow:0 10px 30px -8px rgba(46,75,64,.45); }
-  .rail .tabbtn{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
-    font-size:.6rem; padding:.42rem .2rem; }
-  .rail .tabbtn.active::after{ display:none; }
-  .rail .tabbtn::before{ content:''; width:19px; height:19px; background:currentColor;
+  /* navigation moves into the hamburger drawer */
+  .has-rail > header .nav-burger{ display:inline-flex; }
+  .rail{ position:fixed; top:68px; right:12px; z-index:70; width:min(76vw,290px);
+    display:flex; flex-direction:column; gap:4px; padding:.55rem!important; border-radius:16px;
+    background:var(--card); box-shadow:0 18px 50px -12px rgba(28,38,32,.45);
+    transform:translateY(-8px); opacity:0; pointer-events:none;
+    transition:opacity .16s ease, transform .16s ease; }
+  .nav-open .rail{ opacity:1; transform:none; pointer-events:auto; }
+  .rail .tabbtn{ display:flex; align-items:center; gap:.65rem; text-align:left;
+    padding:.66rem .8rem; font-size:.88rem; }
+  .rail .tabbtn::before{ content:''; width:18px; height:18px; flex:0 0 18px; background:currentColor;
     -webkit-mask:var(--icon) center/contain no-repeat; mask:var(--icon) center/contain no-repeat; }
-  .has-rail{ padding-bottom:96px; }
+  .rail .tabbtn.active::after{ display:none; }
+  .nav-open .nav-scrim{ display:block; position:fixed; inset:0; z-index:65;
+    background:rgba(28,38,32,.35); }
 
-  /* Talk is a full-screen conversation on phones: messages fill the viewport,
-     composer sits at the bottom, no box-in-box chrome */
-  #tab-chat{ display:flex; flex-direction:column; min-height:calc(100dvh - 196px); }
-  #chatBox{ background:transparent; border:0; padding:0; flex:1 1 auto;
+  /* Talk pins to the bottom: messages scroll inside, composer stays put */
+  #tab-chat{ display:flex; flex-direction:column; height:calc(100dvh - 122px); }
+  #chatBox{ background:transparent; border:0; padding:0 2px; flex:1 1 auto;
     max-height:none!important; min-height:0!important; }
   #chatBox > :first-child{ margin-top:auto; }
   .bubble-ai{ box-shadow:0 1px 3px rgba(46,75,64,.08); }
   .session-banner{ margin-bottom:.7rem!important; }
+  #tab-chat p.text-center{ margin-bottom:0; }
 }
 @media (max-width: 575.98px){
   html{ font-size:15px; }
@@ -236,7 +249,8 @@ a{ color:var(--deep); }
   .session-banner .sb-chip{ display:none }
 
   .bubble-user,.bubble-ai,.bubble-couns{ max-width:88%!important; font-size:.92rem!important }
-  #chatBox{ min-height:46vh; max-height:54vh; padding:.65rem }
+  #tab-chat{ height:calc(100dvh - 97px); }
+  #tab-chat p.text-center{ font-size:.66rem }
   .mc-content input.form-control,.mc-content textarea.form-control,.mc-content select.form-select{ font-size:16px }
   .mood-btn{ min-width:0; padding:.5rem .35rem }
   .tear{ margin-left:-1rem; margin-right:-1rem }
