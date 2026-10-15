@@ -172,6 +172,8 @@ a{ color:var(--deep); }
 .auth-main .cardkick{ font-size:.78rem; color:var(--muted); margin-bottom:1rem; }
 .auth-foot{ margin-top:1.6rem; font-size:.74rem; color:var(--muted); text-align:center; }
 
+.trust-mini{ display:none; }
+
 @media (prefers-reduced-motion: reduce){
   .orb::after,.msg-in,.dot-typing span{ animation:none!important }
 }
@@ -196,8 +198,18 @@ a{ color:var(--deep); }
   .rail .tabbtn::before{ content:''; width:19px; height:19px; background:currentColor;
     -webkit-mask:var(--icon) center/contain no-repeat; mask:var(--icon) center/contain no-repeat; }
   .has-rail{ padding-bottom:96px; }
+
+  /* Talk is a full-screen conversation on phones: messages fill the viewport,
+     composer sits at the bottom, no box-in-box chrome */
+  #tab-chat{ display:flex; flex-direction:column; min-height:calc(100dvh - 196px); }
+  #chatBox{ background:transparent; border:0; padding:0; flex:1 1 auto;
+    max-height:none!important; min-height:0!important; }
+  #chatBox > :first-child{ margin-top:auto; }
+  .bubble-ai{ box-shadow:0 1px 3px rgba(46,75,64,.08); }
+  .session-banner{ margin-bottom:.7rem!important; }
 }
 @media (max-width: 575.98px){
+  html{ font-size:15px; }
   .mc-content{ padding-left:12px; padding-right:12px }
   .mc-content:has(> header){ padding-top:72px; }
   .mc-content > header{ padding:.5rem .8rem!important; gap:.45rem!important }
@@ -230,14 +242,18 @@ a{ color:var(--deep); }
   .tear{ margin-left:-1rem; margin-right:-1rem }
   .mc-content table{ display:block; overflow-x:auto }
 
-  /* auth stacks: brand band on top, form below */
-  .auth-wrap{ flex-direction:column; }
-  .auth-side{ flex:none; max-width:none; padding:1.4rem 1.2rem 1.5rem; justify-content:flex-start; gap:.8rem; }
-  .auth-side h1{ font-size:1.65rem; }
-  .auth-side .lede{ font-size:.88rem; }
-  .auth-side .ill-frame{ display:none; }
-  .auth-side .trust-list{ gap:.4rem }
-  .auth-side .trust-list li{ font-size:.8rem }
-  .auth-main{ justify-content:flex-start; padding:1.4rem 1rem; }
-  .auth-main #authCard{ padding:1.15rem; }
+  /* auth on phones: compact brand band, then straight to the form */
+  .auth-wrap{ flex-direction:column; background:var(--cream); }
+  .auth-side{ flex:none; max-width:none; padding:1.3rem 1.2rem 1.5rem; gap:.55rem;
+    justify-content:flex-start; border-radius:0 0 26px 26px; }
+  .auth-side h1{ font-size:1.5rem; line-height:1.2; }
+  .auth-side .lede, .auth-side .ill-frame, .auth-side .trust-list{ display:none; }
+  .auth-main{ justify-content:flex-start; padding:1.2rem 1rem 1.6rem; }
+  .auth-main #authCard{ padding:1.15rem; border-radius:20px; }
+  .auth-main .fs-4{ font-size:1.18rem!important; }
+  .auth-main .cardkick{ margin-bottom:.8rem; }
+  .trust-mini{ display:flex!important; justify-content:center; flex-wrap:wrap; gap:.3rem .5rem;
+    margin-top:1rem; font-size:.72rem; color:var(--muted); }
+  .trust-mini span + span::before{ content:'·'; margin-right:.5rem; color:var(--peach-deep); }
+  .auth-foot{ margin-top:1rem; }
 }

@@ -37,7 +37,7 @@ page_head('Welcome');
       <div id="err" class="alert alert-danger py-2 d-none" style="border-radius:12px;font-size:.85rem"></div>
 
       <form id="loginForm" onsubmit="return doLogin(event)">
-        <input class="form-control mb-2" id="l_user" placeholder="Matric number (or staff username)" required>
+        <input class="form-control mb-2" id="l_user" placeholder="Matric or staff username" required>
         <input class="form-control mb-3" id="l_pass" type="password" placeholder="Password" required>
         <button class="btn glow-btn w-100 py-2">Continue</button>
       </form>
@@ -52,6 +52,7 @@ page_head('Welcome');
         <div class="text-center mt-2" style="font-size:.72rem;color:rgba(34,52,44,.6)">Only used to personalise support. Your conversations stay confidential.</div>
       </form>
     </div>
+    <div class="trust-mini"><span>Confidential</span><span>Licensed counsellors</span><span>Crisis line 112</span></div>
     <div class="auth-foot">HND Seminar Project · Dept. of Computer Science, YabaTech · 2026</div>
   </main>
 </div>
